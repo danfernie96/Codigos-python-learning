@@ -1,0 +1,12 @@
+"""Elabore un programa que permita mostrar el sueldo promedio de un grupo de empleados"""
+
+# lista de empleados
+
+empleado_1 = 3
+empleado_2 = 8
+empleado_3 = 5
+
+# promedio del sueldo
+
+p= (empleado_1 + empleado_2 + empleado_3) / 3
+print(p)
