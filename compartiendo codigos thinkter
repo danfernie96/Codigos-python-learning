@@ -1,0 +1,35 @@
+import tkinter as tk
+
+# Crear la ventana
+ventana = tk.Tk()
+ventana.geometry("400x300")
+ventana.title("Calculadora de IMC")
+ventana.configure(bg='#ADD8E6')  # Azul claro
+
+# Crear etiquetas y campos de entrada para el peso y la estatura
+peso_label = tk.Label(ventana, text="Ingrese su peso en Kilogramos:", font=("Arial", 12))
+peso_label.pack(pady=10)  # Agregar espacio entre elementos
+peso_entry = tk.Entry(ventana, font=("Arial", 12))
+peso_entry.pack(pady=10)
+
+estatura_label = tk.Label(ventana, text="Ingrese su estatura en metros:", font=("Arial", 12))
+estatura_label.pack(pady=10)
+estatura_entry = tk.Entry(ventana, font=("Arial", 12))
+estatura_entry.pack(pady=10)
+
+# Crear un botón para calcular el IMC
+def calcular_imc():
+    peso = float(peso_entry.get())
+    estatura = float(estatura_entry.get())
+    imc = peso / (estatura ** 2)
+    resultado_label.config(text=f"Su IMC es de {imc:.2f}")
+
+boton_calcular_imc = tk.Button(ventana, text="Calcular IMC", command=calcular_imc, font=("Arial", 12), bg='#87CEEB', fg='white')  # Azul claro y letra blanca
+boton_calcular_imc.pack(pady=20)  # Agregar espacio entre elementos
+
+# Crear una etiqueta para mostrar el resultado
+resultado_label = tk.Label(ventana, text="", font=("Arial", 12))
+resultado_label.pack(pady=10)
+
+# Mostrar la ventana
+ventana.mainloop()
