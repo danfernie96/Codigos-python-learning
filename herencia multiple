@@ -1,0 +1,39 @@
+class Dispositivo:
+    def __init__(self, marca, modelo):
+        self.marca = marca
+        self.modelo = modelo
+
+    def informacion(self):
+        return f"La marca es {self.marca} y el modelo es {self.modelo}"
+    
+class Telefono(Dispositivo):
+    def __init__(self, marca, modelo, numero_telefono):
+        self.marca = marca
+        self.modelo = modelo
+        self.numero_telefono =  numero_telefono
+
+    def llamar(self):
+        return f"Llamando al número {self.numero_telefono}"
+
+class Tablet(Dispositivo):
+        def __init__(self, marca, modelo, tamano_pantalla):
+            self.marca = marca
+            self.modelo = modelo
+            self.tamano_pantalla =  tamano_pantalla
+        
+        def navegar(self):
+            return f"\nNavegando la Web en una pantalla de {self.tamano_pantalla}\""
+        
+class Smartphone(Telefono, Tablet):
+        def __init__(self, marca, modelo, numero_telefono, tamano_pantalla):
+             self.marca = marca
+             self.modelo =  modelo
+             self.numero_telefono = numero_telefono
+             self.tamano_pantalla = tamano_pantalla
+
+miTelefono = Telefono("Huawei","P50 Pro",3058976532)
+print(f"{miTelefono.informacion()} {miTelefono.llamar()}")
+miTablet = Tablet("Lenovo","M11",11)
+print(f"{miTablet.informacion()} - {miTablet.navegar()}")
+miSmartphone = Smartphone("Samsung","Galaxy S24", 3002569784, 7)
+print(f"{miSmartphone.informacion()} {miSmartphone.llamar()} {miSmartphone.navegar()}")
