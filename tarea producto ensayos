@@ -1,0 +1,109 @@
+import mysql.connector
+from mysql.connector import Error
+
+# Clase para manejar la conexión a la base de datos
+class Conexion:
+    def conectar():
+        try:
+            mydb = mysql.connector.connect(
+                host="localhost",
+                user="root",
+                password="1234",
+                database="biblio"
+            )
+            print("Conexión exitosa a la base de datos.")
+            return mydb
+        except Error as e:
+            print("Error en la conexión a la base de datos:", str(e))
+
+    def desconectar(mydb):
+        if mydb.is_connected():
+            mydb.close()
+            print("Conexión cerrada correctamente.")
+
+# Clase Libro que representa un libro en la biblioteca
+class Libro:
+    def __init__(self, isbn, titulo, autor, disponibilidad):
+        self.isbn = isbn
+        self.titulo = titulo
+        self.autor = autor
+        self.disponibilidad = disponibilidad
+
+    # Método para insertar un libro en la base de datos
+    def insertar(self):
+        sql = "INSERT INTO libro (isbn, titulo, autor, disponibilidad) VALUES (%s, %s, %s, %s)"
+        val = (self.isbn, self.titulo, self.autor, self.disponibilidad)
+        try:
+            mydb = Conexion.conectar()
+            myCursor = mydb.cursor()
+            myCursor.execute(sql, val)
+            mydb.commit()
+            print("Libro insertado correctamente.")
+        except Error as e:
+            print("Error al insertar el libro:", str(e))
+        finally:
+            Conexion.desconectar(mydb)
+
+    # Método para prestar un libro y actualizar su disponibilidad
+    def prestar(self):
+        if self.disponibilidad == 'S':  # 'S' significa disponible
+            try:
+                mydb = Conexion.conectar()
+                myCursor = mydb.cursor()
+                sql = "UPDATE libro SET disponibilidad = %s WHERE isbn = %s"
+                val = ('N', self.isbn)  # 'N' significa no disponible
+                myCursor.execute(sql, val)
+                mydb.commit()
+                print("Libro prestado exitosamente.")
+                self.disponibilidad = 'N'
+            except Error as e:
+                print("Error al prestar el libro:", str(e))
+            finally:
+                Conexion.desconectar(mydb)
+        else:
+            print("El libro no está disponible para préstamo.")
+
+# Clase Biblioteca para manejar la colección de libros
+class Biblioteca:
+    def __init__(self):
+        self.libros = []
+
+    # Método para agregar un libro a la lista de libros
+    def agregar_libro(self, libro):
+        self.libros.append(libro)
+        print(f"Libro '{libro.titulo}' agregado a la biblioteca.")
+
+    # Método para listar todos los libros disponibles
+    def listar_disponibles(self):
+        try:
+            mydb = Conexion.conectar()
+            myCursor = mydb.cursor()
+            sql = "SELECT * FROM libro WHERE disponibilidad = 'S'"
+            myCursor.execute(sql)
+            resultados = myCursor.fetchall()
+            print("Libros disponibles:")
+            for row in resultados:
+                print(f"ISBN: {row[0]}, Título: {row[1]}, Autor: {row[2]}")
+        except Error as e:
+            print("Error al listar libros disponibles:", str(e))
+        finally:
+            Conexion.desconectar(mydb)
+
+# Ejemplo de uso
+if __name__ == "__main__":
+    # Crear una instancia de la biblioteca
+    biblioteca = Biblioteca()
+    
+    # Crear un libro
+    libro1 = Libro("1237355355", "Cien años de soledad", "Gabriel García Márquez", "S")
+    # Insertar libro en la base de datos
+    libro1.insertar()
+    
+    # Agregar el libro a la biblioteca
+    biblioteca.agregar_libro(libro1)
+    
+    # Prestar un libro
+    libro1.prestar()
+
+    # Listar libros disponibles
+    biblioteca.listar_disponibles()
